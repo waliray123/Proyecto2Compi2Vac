@@ -75,16 +75,24 @@
         </form>
     </div>
     <br>
-    <div id="Parametros" class="container">
-        
+    <div class="container">
 
+        <form method="POST"  id='formParametros' enctype="multipart/form-data">
+            {% csrf_token %}
+            <div id="Parametros">
+                
+            </div>
+        </form>
     </div>
 
     <div id="Reporte" class="container">
         <h2>Reporte del Analisis</h2>
         <h3>Grafico</h3>
-        <img src="{% static 'images/PruebaGrafico.png' %}" alt="grafico" style="width:500px;height:500px;">
-        <h3>Descripcion</h3>    
+        {% if graph%}            
+            <img src='data:image/png;base64,{{ graph }}'>
+        {% endif%}
+        <!--<img src="{% static 'images/PruebaGrafico.png' %}" alt="graficoAnalisis" style="width:500px;height:500px;"id="graficoAnalisis">-->
+        <h3>Descripcion</h3>
         <p>Descripcion completa de un analisis</p>
         <br>
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
