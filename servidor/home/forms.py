@@ -7,8 +7,14 @@ class AnalizarForm(forms.Form):
     campoPaises = forms.CharField(label='campoPaises', max_length=100)    
     campodia = forms.CharField(label='campodia', max_length=100)
     camponum = forms.CharField(label='camponum', max_length=100)
+    diasProyeccion = forms.CharField(label='diasProyeccion', max_length=100)
+    camponumIsopado = forms.CharField(label='camponumIsopado', max_length=100)
     nombreContinente = forms.CharField(label='nombreContinente', max_length=100)
     archivoEn = forms.FileField(label='archivoEn')
+
+class DescargarForm(forms.Form):
+    #grafico = forms.ImageField(label='imagenReporte');
+    descripcion = forms.CharField(label='descripcionReporte')
     
         
         

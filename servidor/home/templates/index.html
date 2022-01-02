@@ -77,27 +77,33 @@
     <br>
     <div class="container">
 
-        <form method="POST"  id='formParametros' enctype="multipart/form-data">
+        <form method="POST" id='formParametros' enctype="multipart/form-data">
             {% csrf_token %}
             <div id="Parametros">
-                
+
             </div>
         </form>
     </div>
 
     <div id="Reporte" class="container">
-        <h2>Reporte del Analisis</h2>
-        <h3>Grafico</h3>
-        {% if graph%}            
-            <img src='data:image/png;base64,{{ graph }}'>
-        {% endif%}
-        <!--<img src="{% static 'images/PruebaGrafico.png' %}" alt="graficoAnalisis" style="width:500px;height:500px;"id="graficoAnalisis">-->
-        <h3>Descripcion</h3>
-        <p>Descripcion completa de un analisis</p>
-        <br>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <button type="submit" class="btn btn-primary">Generar PDF</button>
-        </div>
+        <form action="descargar" method="POST">
+            {% csrf_token %}
+            <h2>Reporte del Analisis</h2>
+            <h3>Grafico</h3>
+            {% if graph%}
+                <img name='imagenReporte' id='imagenReporte' src='data:image/png;base64,{{ graph }}'>
+            {% endif%}            
+            <h3>Descripcion</h3>
+            {% if descripcion%}
+            <p name="descripcionReporte" id="descipcionReporte">
+                {{descripcion|linebreaksbr}}
+            </p>            
+            {% endif%}
+            <br>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-primary">Generar PDF</button>
+            </div>
+        </form>
     </div>
 
 </body>
