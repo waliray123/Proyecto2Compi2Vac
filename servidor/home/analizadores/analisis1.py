@@ -1,10 +1,12 @@
 
 import pandas as pd
 from matplotlib import pyplot as plt
+from reportlab.lib.utils import ImageReader
 from sklearn import preprocessing
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 import io, base64
 
@@ -188,12 +190,14 @@ class Analisis1():
         flike = io.BytesIO()
         plt.savefig(flike)
         b64 = base64.b64encode(flike.getvalue()).decode()
+        imagen = ImageReader(flike)
         #plt.clf()
         plt.cla()
 
         #Retornar un arreglo que contenga la descripcion y el grafico
-        arrReturn =[any]*2
+        arrReturn =[any]*3
         arrReturn[0] = b64
+        arrReturn[2] = imagen
 
         #Generar una descripcion
         descripcion = ""
@@ -385,7 +389,7 @@ class Analisis2():
         axs[1,1].set_xlim(x_new_min,x_new_max)  
         axs[1,1].set_ylim(menorInf,prediccion4)  
 
-        axs[1,1].set_title('\nTendencia de infeccion 1 Anio', fontsize=10)
+        axs[1,1].set_title('\nPredicción de Infertados en un País', fontsize=10)
         axs[1,1].set_xlabel('Dia')
         axs[1,1].set_ylabel('Infectados ') 
 
@@ -1106,8 +1110,6 @@ class Analisis6():
 
 #Predicción de casos de un país para un año.
 class Analisis8():
-
-
     nombrePais = ''
     campoPaises = ''
     campodia = ''
@@ -1225,7 +1227,7 @@ class Analisis8():
         descripcion += " R2 : " + str(r2) + "\n"
         #se realiza hacia un año adelante
         descripcion += "\nLa tendencia de infeccion en el pais: "+ self.nombrePais + ", se realiza mediante varias perspectivas, la primera es al dia siguiente"
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion1) + " infectados, la segunda se observa hacia futuro, para ser exactos un año adelante"
+        descripcion += " donde se obtiene una prediccion de "+str(prediccion1) + " infectados."
 
         arrReturn[1] = descripcion         
 
@@ -1373,7 +1375,7 @@ class Analisis10():
 
         return arrReturn
 
-#Tendencia de la infección por Covid-19 en un País.
+#Porcentaje de hombres infectados por covid-19 en un País desde el primer caso activo
 class Analisis11():
     nombrePais = ''
     campoPaises = ''
@@ -1587,3 +1589,764 @@ class Analisis11():
         arrReturn[1] = descripcion         
 
         return arrReturn
+
+#Tendencia de casos confirmados de Coronavirus en un departamento de un País.
+class Analisis15():
+    nombrePais = ''
+    campoPaises = ''
+    campodia = ''
+    camponum = ''
+    archivoEn = any
+    nombreDep = ''
+    campoDep = ''
+
+
+    def __init__(self,nombrePais,campoPaises,campodia,camponum,archivoEn,nombreDep,campoDep):
+        self.nombrePais = nombrePais
+        self.campoPaises = campoPaises
+        self.campodia = campodia
+        self.camponum = camponum
+        self.archivoEn = archivoEn
+        self.nombreDep = nombreDep
+        self.campoDep = campoDep
+
+    def analizar(self):
+        nombreArchivo = self.archivoEn.name
+        df = any
+
+        #Revisar el tipo de archivo para crear el dataframe
+        if nombreArchivo.endswith('.csv'):
+            df = pd.read_csv(self.archivoEn)            
+        elif nombreArchivo.endswith('.xls') or nombreArchivo.endswith('.xlsx'):
+            df = pd.read_excel(self.archivoEn)            
+        elif nombreArchivo.endswith('.json'):
+            df = pd.read_json(self.archivoEn)
+        
+        #Diferenciar los datos del pais
+        pais = np.asarray(df[self.campoPaises].str.contains(self.nombrePais))             
+        
+
+        #Obtener todos los datos que son del pais
+        dfPais = df[pais]
+
+        #Obtener todos los datos por departamento
+        dep = np.asarray(dfPais[self.campoDep].str.contains(self.nombreDep))             
+
+        dfDep = dfPais[dep]
+        
+        #Crear un array del largo de los dias y que represente las fechas en su valor
+
+        lbl_enc = preprocessing.LabelEncoder()
+        diasLimpios = lbl_enc.fit_transform(dfDep[self.campodia])
+
+
+        X = np.array(diasLimpios).reshape(-1,1)
+        Y = dfDep[self.camponum]
+
+        #Obtener el mayor dia y el menor
+        menorDia = np.amin(X)
+        mayorDia = np.amax(X)
+        #Obtener el mayor numero de infectados y el menor
+        menorInf = np.amin(Y) 
+        mayorInf = np.amax(Y) 
+
+        #Definimos el modelo
+
+        nb_degree = 3
+        polynomial_features = PolynomialFeatures(degree = nb_degree) 
+
+        X_TRANSF = polynomial_features.fit_transform(X)
+
+        # Entrenamos el modelo
+
+        model = LinearRegression() 
+        model.fit(X_TRANSF, Y)  
+        Y_NEW = model.predict(X_TRANSF)  
+
+        #Obtenemos el error y el r cuadrado
+
+        rmse = np.sqrt(mean_squared_error(Y,Y_NEW)) 
+        r2 = r2_score(Y,Y_NEW) 
+
+        print('RMSE: ', rmse) 
+        print('R2: ', r2)
+
+
+        # PREDICCION FINAL
+
+        #Preparar grafos
+        fig, axs = plt.subplots(2, 2)
+        #Prediccion 1 dia despues
+
+        x_new_min = menorDia
+        x_new_max = mayorDia + 1
+
+        X_NEW = np.arange(x_new_max).reshape(-1,1)  
+
+        X_NEW_TRANSF = polynomial_features.fit_transform(X_NEW)  
+        Y_NEW = model.predict(X_NEW_TRANSF)  
+
+        axs[0,0].scatter(X,Y) 
+
+        axs[0,0].plot(X_NEW, Y_NEW, color='coral', linewidth=3)  
+
+        axs[0,0].grid()  
+        axs[0,0].set_xlim(x_new_min,x_new_max)  
+        axs[0,0].set_ylim(menorInf,mayorInf)  
+
+        axs[0,0].set_title('Tendencia de infeccion actual', fontsize=10)
+        axs[0,0].set_xlabel('Dia')
+        axs[0,0].set_ylabel('Infectados ') 
+
+        prediccion1 = Y_NEW[-1]
+
+        #Prediccion a 1 mes
+        x_new_min = menorDia
+        x_new_max = mayorDia + 30
+
+        X_NEW = np.arange(x_new_max).reshape(-1,1)  
+
+        X_NEW_TRANSF = polynomial_features.fit_transform(X_NEW)  
+        Y_NEW = model.predict(X_NEW_TRANSF)  
+
+        prediccion2 = Y_NEW[-1]
+
+        axs[0,1].scatter(X,Y) 
+
+        axs[0,1].plot(X_NEW, Y_NEW, color='coral', linewidth=3)  
+
+        axs[0,1].grid()  
+        axs[0,1].set_xlim(x_new_min,x_new_max)  
+        axs[0,1].set_ylim(menorInf,prediccion2)  
+
+        axs[0,1].set_title('Tendencia de infeccion a 1 mes', fontsize=10)
+        axs[0,1].set_xlabel('Dia')
+        axs[0,1].set_ylabel('Infectados ') 
+
+        #Prediccion a 6 meses
+        x_new_min = menorDia
+        x_new_max = mayorDia + 180
+
+        X_NEW = np.arange(x_new_max).reshape(-1,1)  
+
+        X_NEW_TRANSF = polynomial_features.fit_transform(X_NEW)  
+        Y_NEW = model.predict(X_NEW_TRANSF) 
+
+        prediccion3 = Y_NEW[-1]
+
+        axs[1,0].scatter(X,Y) 
+
+        axs[1,0].plot(X_NEW, Y_NEW, color='coral', linewidth=3)  
+
+        axs[1,0].grid()  
+        axs[1,0].set_xlim(x_new_min,x_new_max)  
+        axs[1,0].set_ylim(menorInf,prediccion3)  
+
+        axs[1,0].set_title('\nTendencia de infeccion a 6 meses', fontsize=10)
+        axs[1,0].set_xlabel('Dia')
+        axs[1,0].set_ylabel('Infectados ') 
+
+
+
+        #Prediccion a 1 anio
+        x_new_min = menorDia
+        x_new_max = mayorDia + 365
+
+        X_NEW = np.arange(x_new_max).reshape(-1,1)  
+
+        X_NEW_TRANSF = polynomial_features.fit_transform(X_NEW)  
+        Y_NEW = model.predict(X_NEW_TRANSF)  
+
+        prediccion4 = Y_NEW[-1]
+
+        axs[1,1].scatter(X,Y) 
+
+        axs[1,1].plot(X_NEW, Y_NEW, color='coral', linewidth=3)  
+
+        axs[1,1].grid()  
+        axs[1,1].set_xlim(x_new_min,x_new_max)  
+        axs[1,1].set_ylim(menorInf,prediccion4)  
+
+        axs[1,1].set_title('\nTendencia de infeccion 1 Anio', fontsize=10)
+        axs[1,1].set_xlabel('Dia')
+        axs[1,1].set_ylabel('Infectados ') 
+
+
+        
+        #Generar imagen y retornarla                                             
+        flike = io.BytesIO()
+        plt.savefig(flike)
+        b64 = base64.b64encode(flike.getvalue()).decode()
+        #plt.clf()
+        plt.cla()
+
+        #Retornar un arreglo que contenga la descripcion y el grafico
+        arrReturn =[any]*2
+        arrReturn[0] = b64
+
+        #Generar una descripcion
+        descripcion = ""
+        descripcion += " Los datos fueron obtenidos mediante una funcion polinomial de tercer grado brindada por sklearn\n"
+        descripcion += " Esta funcion presento los siguientes resultados:\n"
+        descripcion += " RMSE : " + str(rmse) + "\n"
+        descripcion += " R2 : " + str(r2) + "\n"
+
+        descripcion += "\nLa tendencia de infeccion en el pais: "+ self.nombrePais + "en el departamento "+self.nombreDep+", se realiza mediante varias perspectivas, la primera es al dia siguiente"
+        descripcion += "donde se obtiene una prediccion de "+str(prediccion1) + " infectados, la segunda se observa hacia un futuro cercano, un mes para ser exactos"
+        descripcion += "donde se obtiene una prediccion de "+str(prediccion2) + " infectados, la tercera se observa igual hacia seis meses adelante"
+        descripcion += "donde se obtiene una prediccion de "+str(prediccion3) + " infectados, y la ultima se realiza hacia un año adelante"
+        descripcion += "donde se obtiene una prediccion de "+str(prediccion4) + " infectados, entonces podemos "
+        if prediccion1 > prediccion4:
+            descripcion += "concluir que al cabo de un año obtendremos menos infectados que en el mes cercano, por lo que se puede decir que tendera a bajar el numero de infectados en un año"            
+        else:
+            descripcion += "concluir que al cabo de un año obtendremos mas infectados que en el mes cercano, por lo que se puede decir que tendera a subir el numero de infectados en un año"    
+
+        arrReturn[1] = descripcion         
+
+        return arrReturn
+
+#Porcentaje de muertes frente al total de casos en un país, región o continente.
+class Analisis16():
+    nombrePais = ''
+    campoPaises = ''
+    campodia = ''
+    camponumInf = ''
+    camponumMuer = ''
+    archivoEn = any
+
+    def __init__(self,nombrePais,campoPaises,campodia,camponumInf,camponumMuer,archivoEn):
+        self.nombrePais = nombrePais
+        self.campoPaises = campoPaises
+        self.campodia = campodia
+        self.camponumInf = camponumInf
+        self.camponumMuer = camponumMuer
+        self.archivoEn = archivoEn
+
+    def analizar(self):
+        nombreArchivo = self.archivoEn.name
+        df = any
+
+        #Revisar el tipo de archivo para crear el dataframe
+        if nombreArchivo.endswith('.csv'):
+            df = pd.read_csv(self.archivoEn)            
+        elif nombreArchivo.endswith('.xls') or nombreArchivo.endswith('.xlsx'):
+            df = pd.read_excel(self.archivoEn)            
+        elif nombreArchivo.endswith('.json'):
+            df = pd.read_json(self.archivoEn)
+        
+        #Diferenciar los datos del pais
+        pais = np.asarray(df[self.campoPaises].str.contains(self.nombrePais))             
+
+        #Obtener todos los datos que son del pais
+        dfPais = df[pais]
+
+        #Obtener totol de casos
+        infectados = dfPais[self.camponumInf]
+
+        totalInfectados = 0
+        for infec in infectados:
+            totalInfectados += infec
+
+        #Obtener total de muertes
+        muertes = dfPais[self.camponumInf]
+
+        totalMuertes = 0
+        for muerte in muertes:
+            totalMuertes += muerte
+
+        #Sacar un porcentaje
+        porcentaje = (totalInfectados / totalMuertes) * 100
+
+        #Describir
+        descripcion = ""
+        descripcion += "Para calcular el porcentaje de muertes frente a casos de covid en :" + self.nombrePais
+        descripcion += " primero se obtuvieron los datos acerca del total de infectados y el total de muertes de la region.\n"
+        descripcion += " El total de muertes es: "+ str(totalMuertes) + "\n"
+        descripcion += " El total de casos infecados es: "+ str(totalInfectados) + "\n"
+        descripcion += " Por lo que podemos inferir que el porcentaje de muertes frente a casos de covid en "+ self.nombrePais+" es de \n"
+        descripcion += str(porcentaje)+"%\n"        
+
+#Predicción de muertes en el último día del primer año de infecciones en un país.
+class Analisis19():
+    nombrePais = ''
+    campoPaises = ''
+    campodia = ''
+    camponum = ''
+    archivoEn = any    
+
+
+    def __init__(self,nombrePais,campoPaises,campodia,camponum,archivoEn):
+        self.nombrePais = nombrePais
+        self.campoPaises = campoPaises
+        self.campodia = campodia
+        self.camponum = camponum
+        self.archivoEn = archivoEn
+
+    def analizar(self):
+        nombreArchivo = self.archivoEn.name
+        df = any
+
+        #Revisar el tipo de archivo para crear el dataframe
+        if nombreArchivo.endswith('.csv'):
+            df = pd.read_csv(self.archivoEn)            
+        elif nombreArchivo.endswith('.xls') or nombreArchivo.endswith('.xlsx'):
+            df = pd.read_excel(self.archivoEn)            
+        elif nombreArchivo.endswith('.json'):
+            df = pd.read_json(self.archivoEn)
+        
+        #Diferenciar los datos del pais
+        pais = np.asarray(df[self.campoPaises].str.contains(self.nombrePais))             
+
+        #Obtener todos los datos que son del pais
+        dfPais = df[pais]
+
+        
+        #Crear un array del largo de los dias y que represente las fechas en su valor
+
+        lbl_enc = preprocessing.LabelEncoder()
+        diasLimpios = lbl_enc.fit_transform(dfPais[self.campodia])
+
+
+        X = np.array(diasLimpios).reshape(-1,1)
+        Y = dfPais[self.camponum]
+
+        #Obtener el mayor dia y el menor
+        menorDia = np.amin(X)
+        mayorDia = np.amax(X)
+        #Obtener el mayor numero de infectados y el menor
+        menorInf = np.amin(Y) 
+        mayorInf = np.amax(Y) 
+
+        #Definimos el modelo
+
+        nb_degree = 3
+        polynomial_features = PolynomialFeatures(degree = nb_degree) 
+
+        X_TRANSF = polynomial_features.fit_transform(X)
+
+        # Entrenamos el modelo
+
+        model = LinearRegression() 
+        model.fit(X_TRANSF, Y)  
+        Y_NEW = model.predict(X_TRANSF)  
+
+        #Obtenemos el error y el r cuadrado
+
+        rmse = np.sqrt(mean_squared_error(Y,Y_NEW)) 
+        r2 = r2_score(Y,Y_NEW) 
+
+        print('RMSE: ', rmse) 
+        print('R2: ', r2)
+
+
+        # PREDICCION FINAL
+        #Prediccion a 1 anio desde el primer dia
+        cantidadRestante = 365 - mayorDia
+
+        x_new_min = menorDia
+        x_new_max = 365
+
+        X_NEW = np.arange(x_new_max).reshape(-1,1)  
+
+        X_NEW_TRANSF = polynomial_features.fit_transform(X_NEW)  
+        Y_NEW = model.predict(X_NEW_TRANSF)  
+
+        prediccion1 = Y_NEW[-1]
+
+        plt.scatter(X,Y) 
+
+        plt.plot(X_NEW, Y_NEW, color='coral', linewidth=3)  
+
+        plt.grid()  
+        plt.set_xlim(x_new_min,x_new_max)  
+        plt.set_ylim(menorInf,prediccion1)  
+
+        plt.set_title('\nTendencia de infeccion 1 Anio', fontsize=10)
+        plt.set_xlabel('Dia')
+        plt.set_ylabel('Infectados ') 
+
+
+        
+        #Generar imagen y retornarla                                             
+        flike = io.BytesIO()
+        plt.savefig(flike)
+        b64 = base64.b64encode(flike.getvalue()).decode()
+        #plt.clf()
+        plt.cla()
+
+        #Retornar un arreglo que contenga la descripcion y el grafico
+        arrReturn =[any]*2
+        arrReturn[0] = b64
+
+        #Generar una descripcion
+        descripcion = ""
+        descripcion += " Los datos fueron obtenidos mediante una funcion polinomial de tercer grado brindada por sklearn\n"
+        descripcion += " Esta funcion presento los siguientes resultados:\n"
+        descripcion += " RMSE : " + str(rmse) + "\n"
+        descripcion += " R2 : " + str(r2) + "\n"
+        #se realiza hacia un año adelante
+        descripcion += "\nLa tendencia de infeccion en el pais: "+ self.nombrePais + ", se realiza hacia futuro completando un año"
+        descripcion += " donde se obtiene una prediccion de "+str(prediccion1) + " casos"
+
+        arrReturn[1] = descripcion         
+
+        return arrReturn
+
+#Predicciones de casos y muertes en todo el mundo - Neural Network MLPRegressor
+class Analisis21():
+    nombrePais = ''
+    campoPaises = ''
+    campodia = ''
+    camponum = ''
+    camponum2 = ''
+    archivoEn = any    
+
+
+    def __init__(self,nombrePais,campoPaises,campodia,camponum,camponum2,archivoEn):
+        self.nombrePais = nombrePais
+        self.campoPaises = campoPaises
+        self.campodia = campodia
+        self.camponum = camponum
+        self.camponum2 = camponum2
+        self.archivoEn = archivoEn
+
+    def analizar(self):
+        nombreArchivo = self.archivoEn.name
+        df = any
+
+        #Revisar el tipo de archivo para crear el dataframe
+        if nombreArchivo.endswith('.csv'):
+            df = pd.read_csv(self.archivoEn)            
+        elif nombreArchivo.endswith('.xls') or nombreArchivo.endswith('.xlsx'):
+            df = pd.read_excel(self.archivoEn)            
+        elif nombreArchivo.endswith('.json'):
+            df = pd.read_json(self.archivoEn)
+
+        #Crear un array del largo de los dias y que represente las fechas en su valor
+
+        lbl_enc = preprocessing.LabelEncoder()
+        diasLimpios = lbl_enc.fit_transform(df[self.campodia])
+
+
+        X = np.array(diasLimpios).reshape(-1,1)        
+        Y1 = df[self.camponum]
+        Y2 = df[self.camponum2]
+
+        #Obtener el mayor dia y el menor
+        menorDia = np.amin(X)
+        mayorDia = np.amax(X)
+        #Entrenar el modelo
+
+        mlp = MLPRegressor(hidden_layer_sizes=(100,100,100),solver='lbfgs',activation='relu',max_iter=70000).fit(X,Y1)
+
+        mlp2 = MLPRegressor( hidden_layer_sizes=(100,100,100),solver='lbfgs',activation='relu',max_iter=70000).fit(X,Y2)
+
+        training_cases = mlp.predict(X)
+
+        training_deaths = mlp2.predict(X)
+
+        pred1Casos = mlp.predict(mayorDia+1)
+        pred2Casos = mlp.predict(mayorDia+30)
+        pred3Casos = mlp.predict(mayorDia+365)
+        
+        pred1Muertes = mlp2.predict(mayorDia+1)
+        pred2Muertes = mlp2.predict(mayorDia+30)
+        pred3Muertes = mlp2.predict(mayorDia+365)
+
+        fig, axs = plt.subplots(2)
+
+        axs[0].set_title('Infectados')
+        axs[0].set_ylabel('Casos')
+        axs[0].set_xlabel('Dia')
+        axs[0].plot(X, Y1)
+        axs[0].plot(X, training_cases)
+
+        axs[1].set_title('Muertes')
+        axs[1].set_ylabel('Muertos')
+        axs[1].set_xlabel('Dia')
+        axs[1].plot(X, Y2)
+        axs[1].plot(X, training_deaths)
+
+        #Generar imagen y retornarla                                             
+        flike = io.BytesIO()
+        plt.savefig(flike)
+        b64 = base64.b64encode(flike.getvalue()).decode()
+        #plt.clf()
+        plt.cla()
+
+        #Retornar un arreglo que contenga la descripcion y el grafico
+        arrReturn =[any]*2
+        arrReturn[0] = b64
+
+        #Generar una descripcion
+        descripcion = ""
+        descripcion += " Los datos fueron obtenidos mediante una red neural brindada por sklearn llamada MLBPRegressor\n"
+        descripcion += " Esta funcion presento los siguientes resultados:\n"                
+        descripcion += " Prediccion para 1 dia despues Casos:"+str(pred1Casos)+"\n"
+        descripcion += " Prediccion para 1 dia despues Muertes:"+str(pred1Muertes)+"\n"
+        descripcion += " Prediccion para 30 dias despues Casos:"+str(pred2Casos)+"\n"           
+        descripcion += " Prediccion para 30 dias despues Muertes:"+str(pred2Muertes)+"\n" 
+        descripcion += " Prediccion para 365 dias despues del ultimo Casos:"+str(pred3Casos)+"\n"                
+        descripcion += " Prediccion para 365 dias despues del ultimo Muertes:"+str(pred3Muertes)+"\n"                       
+
+        arrReturn[1] = descripcion         
+
+        return arrReturn
+
+#Tasa de mortalidad por coronavirus (COVID-19) en un país.
+class Analisis22(): 
+    nombrePais = ''
+    campoPaises = ''    
+    campodia = ''
+    camponumInf = ''
+    camponumMuer = ''
+    archivoEn = any    
+
+
+    def __init__(self,nombrePais,campoPaises,campodia,camponumInf,camponumMuer,archivoEn):
+        self.nombrePais = nombrePais
+        self.campoPaises = campoPaises
+        self.campodia = campodia
+        self.camponumInf = camponumInf
+        self.camponumMuer = camponumMuer
+        self.archivoEn = archivoEn        
+
+    def analizar(self):
+        nombreArchivo = self.archivoEn.name
+        df = any
+
+        #Revisar el tipo de archivo para crear el dataframe
+        if nombreArchivo.endswith('.csv'):
+            df = pd.read_csv(self.archivoEn)            
+        elif nombreArchivo.endswith('.xls') or nombreArchivo.endswith('.xlsx'):
+            df = pd.read_excel(self.archivoEn)            
+        elif nombreArchivo.endswith('.json'):
+            df = pd.read_json(self.archivoEn)
+        
+        #Diferenciar los datos del pais
+        pais = np.asarray(df[self.campoPaises].str.contains(self.nombrePais))             
+
+        #Obtener todos los datos que son del pais
+        dfPais = df[pais]        
+
+        #Crear un array del largo de los dias y que represente las fechas en su valor
+
+        lbl_enc = preprocessing.LabelEncoder()
+        diasLimpios = lbl_enc.fit_transform(dfPais[self.campodia])
+
+        
+        X = np.array(diasLimpios).reshape(-1,1)
+        Y1 = dfPais[self.camponumInf]
+        Y2 = dfPais[self.camponumMuer]
+
+        #Obtener el mayor dia y el menor
+        menorDia = np.amin(X)
+        mayorDia = np.amax(X)
+        #Obtener el mayor numero de infectados y el menor
+        menorInf = np.amin(Y1) 
+        mayorInf = np.amax(Y1) 
+
+        #Obtener el mayor numero de muertes y el menor
+        menorMuer = np.amin(Y2) 
+        mayorMuer = np.amax(Y2) 
+
+        #Definimos el modelo en este caso es lineal ya que es el mas comun en el analisis de 2 datos bastante dispersos
+
+        #Se define la variable para la acumulacion 1 anio despues del primer dia
+        predict = [365]
+        predict = np.array(predict).reshape(-1,1) 
+
+        fig, axs = plt.subplots(2)
+
+        regr = LinearRegression()
+
+        regr.fit(X,Y1)        
+
+        
+        Y_PRED = regr.predict(X)
+
+        prediccion1Inf = regr.predict([[mayorDia+1]])
+        prediccion2Inf = regr.predict([[365]])
+        prediccionAcumInf = regr.predict(predict)
+
+        r21 = r2_score(Y1,Y_PRED)        
+        rmse1 = np.sqrt(mean_squared_error(Y1,Y_PRED))         
+
+        axs[0].scatter(X,Y1,color="black")
+        axs[0].plot(X,Y_PRED,color="blue")
+
+        axs[0].ylim(menorInf,mayorInf) 
+
+        #Prediccion de muertes
+        regr2 = LinearRegression()
+
+        regr2.fit(X,Y2)        
+
+        Y_PRED2 = regr2.predict(X)
+
+        prediccion1Muer = regr2.predict([[mayorDia+1]])
+        prediccion2Muer = regr2.predict([[365]])
+        prediccionAcumMuer = regr2.predict(predict)        
+        
+
+        r22 = r2_score(Y2,Y_PRED)        
+        rmse2 = np.sqrt(mean_squared_error(Y2,Y_PRED))         
+
+        axs[1].scatter(X,Y2,color="black")
+        axs[1].plot(X,Y_PRED2,color="blue")
+
+        axs[1].ylim(menorMuer,mayorMuer) 
+
+        #TAsa de mortalidad
+        tasa = prediccionAcumMuer/prediccionAcumInf
+        
+        #Generar imagen y retornarla                                             
+        flike = io.BytesIO()
+        plt.savefig(flike)
+        b64 = base64.b64encode(flike.getvalue()).decode()
+        #plt.clf()
+        plt.cla()
+
+        #Retornar un arreglo que contenga la descripcion y el grafico
+        arrReturn =[any]*2
+        arrReturn[0] = b64
+
+        #Generar una descripcion
+        descripcion = ""
+        descripcion += " Los datos fueron obtenidos mediante una funcion lineal brindada por sklearn\n"
+        descripcion += " La primera funcion presento los siguientes resultados para los casos de infectados:\n"
+        descripcion += " RMSE : " + str(rmse1) + "\n"
+        descripcion += " R2 : " + str(r21) + "\n"
+
+        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados es el siguiente: \n"
+        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
+
+        descripcion += " La segunda funcion presento los siguientes resultados para los casos de infectados:\n"
+        descripcion += " RMSE : " + str(rmse2) + "\n"
+        descripcion += " R2 : " + str(r22) + "\n"
+
+        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados es el siguiente: \n"
+        descripcion += " Y = " + str(regr2.coef_[0][0]) + "X+" + str(regr2.intercept_[0]) + "\n"
+
+        descripcion += "\nEste indice de mortaliadad en el pais: "+ self.nombrePais
+        descripcion += ", se realiza mediante varias perspectivas,la de los casos y la de los muertos, ademas de verlos a traves del tiempo,"
+        descripcion += " para los casos se predicen algunos datos, el primero es justo al dia siguiente del ultimo ingresado"
+        descripcion += " donde se obtiene una prediccion de "+str(prediccion1Inf) + " infectados, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
+        descripcion += " donde se obtiene una prediccion de "+str(prediccion2Inf) + " infectados"
+        descripcion += " asi como tambien se obtiene una prediccion de los casos acumulados de "+str(prediccionAcumInf) + " infectados."
+        descripcion += " Y de la misma manera se realiza para los muertos, el primero justo al dia siguiente del ultimo"
+        descripcion += " donde se obtiene una prediccion de "+str(prediccion1Muer) + " muertos, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
+        descripcion += " donde se obtiene una prediccion de "+str(prediccion2Muer) + " muertos"
+        descripcion += " asi como tambien se obtiene una prediccion de los muertos acumulados de "+str(prediccionAcumMuer) + " .\n"
+        descripcion += " Analizando el modelo que se presento se infiere que: \n"
+        if str(regr2.coef_[0][0]) < 0:
+            descripcion += " Las muertes en el pais estaran disminuyendo\n"
+        else:
+            descripcion += " Las muertes en el pais estaran aumentando\n"   
+
+        descripcion += " Asi que de esta manera podemos explicar que la tasa de mortalidad en: " + self.nombrePais + " se calcula de la siguiente manera: \n"
+        descripcion += " Muertos / Casos\n"
+        descripcion +=  str(prediccionAcumMuer)+"/"+str(prediccionAcumInf)+" = "+str(tasa*100)+"%\n"
+
+        arrReturn[1] = descripcion         
+
+        return arrReturn
+
+
+#Tasa de mortalidad por coronavirus (COVID-19) en un país.
+class Analisis25():             
+    campodia = ''
+    camponumInf = ''    
+    archivoEn = any    
+
+
+    def __init__(self,campodia,camponumInf,archivoEn):                
+        self.campodia = campodia
+        self.camponumInf = camponumInf        
+        self.archivoEn = archivoEn        
+
+    def analizar(self):
+        nombreArchivo = self.archivoEn.name
+        df = any
+
+        #Revisar el tipo de archivo para crear el dataframe
+        if nombreArchivo.endswith('.csv'):
+            df = pd.read_csv(self.archivoEn)            
+        elif nombreArchivo.endswith('.xls') or nombreArchivo.endswith('.xlsx'):
+            df = pd.read_excel(self.archivoEn)            
+        elif nombreArchivo.endswith('.json'):
+            df = pd.read_json(self.archivoEn)      
+
+        #Crear un array del largo de los dias y que represente las fechas en su valor
+
+        lbl_enc = preprocessing.LabelEncoder()
+        diasLimpios = lbl_enc.fit_transform(df[self.campodia])
+
+        
+        X = np.array(diasLimpios).reshape(-1,1)
+        Y1 = df[self.camponumInf]
+        
+
+        #Obtener el mayor dia y el menor
+        menorDia = np.amin(X)
+        mayorDia = np.amax(X)
+        #Obtener el mayor numero de infectados y el menor
+        menorInf = np.amin(Y1) 
+        mayorInf = np.amax(Y1) 
+        
+
+        #Definimos el modelo en este caso es lineal ya que es el mas comun en el analisis de 2 datos bastante dispersos        
+
+        regr = LinearRegression()
+
+        regr.fit(X,Y1)        
+
+        
+        Y_PRED = regr.predict(X)
+
+        prediccion1Inf = regr.predict([[mayorDia+1]])
+        prediccion2Inf = regr.predict([[mayorDia+365]])        
+
+        r21 = r2_score(Y1,Y_PRED)        
+        rmse1 = np.sqrt(mean_squared_error(Y1,Y_PRED))         
+
+        plt.scatter(X,Y1,color="black")
+        plt.plot(X,Y_PRED,color="blue")
+
+        plt.ylim(menorInf,mayorInf) 
+        
+        #Generar imagen y retornarla                                             
+        flike = io.BytesIO()
+        plt.savefig(flike)
+        b64 = base64.b64encode(flike.getvalue()).decode()
+        #plt.clf()
+        plt.cla()
+
+        #Retornar un arreglo que contenga la descripcion y el grafico
+        arrReturn =[any]*2
+        arrReturn[0] = b64
+
+        #Generar una descripcion
+        descripcion = ""
+        descripcion += " Los datos fueron obtenidos mediante una funcion lineal brindada por sklearn\n"
+        descripcion += " La primera funcion presento los siguientes resultados para los casos de infectados:\n"
+        descripcion += " RMSE : " + str(rmse1) + "\n"
+        descripcion += " R2 : " + str(r21) + "\n"
+
+        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados es el siguiente: \n"
+        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
+
+        descripcion += " Se realizan dos predicciones la primera es al dia siguiente al ultimo, que da "+prediccion1Inf + "casos y la otra"
+        descripcion += " es a 365 dias despues del ultimo que da "+prediccion2Inf + "casos.\n"
+
+
+
+        if str(regr.coef_[0][0]) < 0:
+            descripcion += " Los casos de infecciones por coronavirus estaran disminuyendo\n"
+        else:
+            descripcion += " Las casos de infecciones por coronavirus estaran aumentando\n"           
+
+        arrReturn[1] = descripcion
+
+        return arrReturn    
+
