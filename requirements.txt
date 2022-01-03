@@ -1,6 +1,4 @@
-dj-database-url==0.4.2
-Django==1.11.7
+Django==4.0
 gunicorn==19.7.1
-scipy==1.4.1
-scikit-learn==0.22.2.post1
-numpy==1.19.5
+scikit-learn==1.0.1
+numpy==1.21.5
