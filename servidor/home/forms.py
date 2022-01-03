@@ -15,6 +15,10 @@ class AnalizarForm(forms.Form):
 class DescargarForm(forms.Form):
     #grafico = forms.ImageField(label='imagenReporte');
     descripcion = forms.CharField(label='descripcionReporte')
+
+class ParametrizarForm(forms.Form):
+    #grafico = forms.ImageField(label='imagenReporte');
+    inputGroupSelect01 = forms.CharField(label='inputGroupSelect01')
     
         
         

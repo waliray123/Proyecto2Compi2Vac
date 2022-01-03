@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from .forms import AnalizarForm
+from .forms import AnalizarForm, ParametrizarForm
 
 from .analizadores.analisis1 import Analisis1
 from .analizadores.analisis1 import Analisis3
@@ -23,6 +23,7 @@ TEMPLATE_DIRS = (
 def index(request):
     contexto = any
     descripcion = any
+    print("Se tiene que analizar")
     if request.method == 'POST' and request.FILES['archivoEn']:
         print('Analizando Post')
 
@@ -144,3 +145,14 @@ def descargar(request):
     # present the option to save the file.
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename='Analisis.pdf')
+
+def seleccionar(request):
+    valPar = 0
+    if request.method == 'POST':
+        form = ParametrizarForm(request.POST)
+
+        if form.is_valid():            
+            valPar = form.cleaned_data['inputGroupSelect01']
+
+
+    return render(request, "index.html", {'valorParametro': valPar})
