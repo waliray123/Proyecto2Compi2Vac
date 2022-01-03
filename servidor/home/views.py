@@ -3,10 +3,8 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from reportlab.lib.utils import ImageReader
 from .forms import AnalizarForm
 
-from django.core.files.storage import FileSystemStorage
 from .analizadores.analisis1 import Analisis1
 from .analizadores.analisis1 import Analisis3
 
