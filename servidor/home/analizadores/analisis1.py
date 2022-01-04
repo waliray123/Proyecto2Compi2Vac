@@ -586,17 +586,19 @@ class Analisis4():
     campoDepartamento = ''
     campodia = ''
     camponum = ''
+    nombreDep = ''
     archivoEn = any
     diasPrediccion = 0
 
 
-    def __init__(self,nombrePais,campoPaises,campodia,camponum,archivoEn,campoDepartamento):
+    def __init__(self,nombrePais,campoPaises,campodia,camponum,archivoEn,campoDepartamento,nombreDep):
         self.nombrePais = nombrePais
         self.campoPaises = campoPaises
         self.campodia = campodia
         self.camponum = camponum
         self.archivoEn = archivoEn
         self.campoDepartamento = campoDepartamento
+        self.nombreDep = nombreDep
 
     def analizar(self):
         nombreArchivo = self.archivoEn.name
@@ -617,7 +619,8 @@ class Analisis4():
         dfPais = df[pais]
 
         #Obtener todos los datos que son del departamento
-        dfDep = dfPais[self.campoDepartamento]
+        dep = np.asarray(dfPais[self.campoDepartamento].str.contains(self.nombreDep))             
+        dfDep = dfPais[dep]
 
         #Crear un array del largo de los dias y que represente las fechas en su valor
 
@@ -886,9 +889,9 @@ class Analisis5():
         axs[0,0].set_xlim(x_new_min,x_new_max)  
         axs[0,0].set_ylim(menorInf,mayorInf)  
 
-        axs[0,0].set_title('Tendencia de infeccion actual', fontsize=10)
+        axs[0,0].set_title('Tendencia de Muertos actual', fontsize=10)
         axs[0,0].set_xlabel('Dia')
-        axs[0,0].set_ylabel('Infectados ') 
+        axs[0,0].set_ylabel('Muertos ') 
 
         prediccion1 = Y_NEW[-1]
 
@@ -911,9 +914,9 @@ class Analisis5():
         axs[0,1].set_xlim(x_new_min,x_new_max)  
         axs[0,1].set_ylim(menorInf,prediccion2)  
 
-        axs[0,1].set_title('Tendencia de infeccion a 1 mes', fontsize=10)
+        axs[0,1].set_title('Tendencia de Muertos a 1 mes', fontsize=10)
         axs[0,1].set_xlabel('Dia')
-        axs[0,1].set_ylabel('Infectados ') 
+        axs[0,1].set_ylabel('Muertos ') 
 
         #Prediccion a 6 meses
         x_new_min = menorDia
@@ -934,9 +937,9 @@ class Analisis5():
         axs[1,0].set_xlim(x_new_min,x_new_max)  
         axs[1,0].set_ylim(menorInf,prediccion3)  
 
-        axs[1,0].set_title('\nTendencia de infeccion a 6 meses', fontsize=10)
+        axs[1,0].set_title('\nTendencia de Muertos a 6 meses', fontsize=10)
         axs[1,0].set_xlabel('Dia')
-        axs[1,0].set_ylabel('Infectados ') 
+        axs[1,0].set_ylabel('Muertos ') 
 
 
 
@@ -959,9 +962,9 @@ class Analisis5():
         axs[1,1].set_xlim(x_new_min,x_new_max)  
         axs[1,1].set_ylim(menorInf,prediccion4)  
 
-        axs[1,1].set_title('\nTendencia de infeccion 1 Anio', fontsize=10)
+        axs[1,1].set_title('\nTendencia de Muertos 1 Anio', fontsize=10)
         axs[1,1].set_xlabel('Dia')
-        axs[1,1].set_ylabel('Infectados ') 
+        axs[1,1].set_ylabel('Muertos ') 
 
 
         
@@ -1087,16 +1090,13 @@ class Analisis6():
         descripcion += " RMSE : " + str(rmse) + "\n"
         descripcion += " R2 : " + str(r2) + "\n"
 
-        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados es el siguiente: \n"
-        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
-
         descripcion += "\nLa prediccion mortalidad por casos de corononavirus en el pais: "+ self.nombrePais
         descripcion += ", se realiza mediante varias perspectivas, la primera es al dia siguiente"
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion1) + " infectados, la segunda se observa hacia futuro ,año despues del ultimo para ser exactos"                
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion2) + " infectados.\n"
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion1)) + " muertes, la segunda se observa hacia futuro ,año despues del ultimo para ser exactos"                
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion2)) + " muertes.\n"
 
         descripcion += " Analizando el modelo que se presento se comcluye que: \n"
-        if str(regr.coef_[0][0]) < 0:
+        if regr.coef_[0] < 0:
             descripcion += " Las muertes en el pais estaran disminuyendo\n"
         else:
             descripcion += " Las muertes en el pais estaran aumentando\n"                
@@ -1403,12 +1403,12 @@ class Analisis8():
         plt.plot(X_NEW, Y_NEW, color='coral', linewidth=3)  
 
         plt.grid()  
-        plt.set_xlim(x_new_min,x_new_max)  
-        plt.set_ylim(menorInf,prediccion1)  
+        plt.xlim(x_new_min,x_new_max)  
+        plt.ylim(menorInf,prediccion1)  
 
-        plt.set_title('\nTendencia de infeccion 1 Anio', fontsize=10)
-        plt.set_xlabel('Dia')
-        plt.set_ylabel('Infectados ') 
+        plt.title('\nTendencia de infeccion 1 Anio', fontsize=10)
+        plt.xlabel('Dia')
+        plt.ylabel('Infectados ') 
 
 
         
@@ -1430,8 +1430,9 @@ class Analisis8():
         descripcion += " RMSE : " + str(rmse) + "\n"
         descripcion += " R2 : " + str(r2) + "\n"
         #se realiza hacia un año adelante
-        descripcion += "\nLa tendencia de infeccion en el pais: "+ self.nombrePais + ", se realiza mediante varias perspectivas, la primera es al dia siguiente"
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion1) + " infectados."
+        descripcion += "\nLa tendencia de infeccion en el pais: "+ self.nombrePais + ", se realiza mediante varias perspectivas, aunque en este analisis"
+        descripcion += " se realiza hacia 365 dias despues del ultimo,"
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion1)) + " infectados."
 
         arrReturn[1] = descripcion         
 
@@ -1686,8 +1687,10 @@ class Analisis10():
 
         lbl_enc = preprocessing.LabelEncoder()
         diasLimpios = lbl_enc.fit_transform(dfPais[self.campodia])        
+        diasLimpios2 = lbl_enc.fit_transform(dfPais2[self.campodia])        
 
         X = np.array(diasLimpios).reshape(-1,1)
+        X2 = np.array(diasLimpios2).reshape(-1,1)
         Y = dfPais[self.camponum]
         Y2 = dfPais2[self.camponum]
 
@@ -1707,7 +1710,7 @@ class Analisis10():
         regr2 = LinearRegression()
 
         regr.fit(X,Y)
-        regr2.fit(X,Y2)
+        regr2.fit(X2,Y2)
 
         #Preparamos las figuras
         fig, axs = plt.subplots(2)
@@ -1727,7 +1730,7 @@ class Analisis10():
         axs[0].set_ylim(menorInf1,mayorInf1) 
 
         #Realizar prediccion En pais 2
-        Y_PRED2 = regr2.predict(X)
+        Y_PRED2 = regr2.predict(X2)
 
         prediccion12 = regr2.predict([[mayorDia+1]])
         prediccion22 = regr2.predict([[mayorDia+365]])
@@ -1735,8 +1738,8 @@ class Analisis10():
         r22 = r2_score(Y2,Y_PRED2)        
         rmse2 = np.sqrt(mean_squared_error(Y2,Y_PRED2))         
 
-        axs[1].scatter(X,Y2,color="black")
-        axs[1].plot(X,Y_PRED2,color="blue")
+        axs[1].scatter(X2,Y2,color="black")
+        axs[1].plot(X2,Y_PRED2,color="blue")
         axs[1].set_ylim(menorInf2,mayorInf2) 
 
         
@@ -1764,12 +1767,8 @@ class Analisis10():
 
         descripcion += " Para aclarar el primer grafico es que del pais : "+ self.nombrePais + ", y el segundo grafico corresponde al pais: " + self.nombrePais2
         descripcion += " una vez aclarado esto se puede dar una descripcion acerca de cada uno de ellos"
-        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados del pais: " + self.nombrePais+" es el siguiente: \n"
-        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
-        descripcion += " Ademas de predecir hacia un año que la vacunacion seria de: " + prediccion21 +"\n"
-        descripcion += " Y el modelo que presento mediante el entrenamiento segun los datos brindados del pais: " + self.nombrePais2+" es el siguiente: \n"
-        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
-        descripcion += " Ademas de predecir hacia un año que la vacunacion seria de: " + prediccion22 +"\n"
+        descripcion += " Prediccion hacia un año que la vacunacion del pais "+ self.nombrePais + " seria de: " + str(int(prediccion21)) +"\n"
+        descripcion += " Prediccion hacia un año que la vacunacion del pais "+ self.nombrePais2 + " seria de: " + str(int(prediccion22)) +"\n"
 
         descripcion += " Entonces podemos concluir que: \n"
         if prediccion21 > prediccion12:
@@ -1818,17 +1817,12 @@ class Analisis11():
         elif nombreArchivo.endswith('.json'):
             df = pd.read_json(self.archivoEn)
         
-        #Diferenciar los datos del pais
-        pais = np.asarray(df[self.campoPaises].str.contains(self.nombrePais))             
-
-        #Obtener todos los datos que son del pais
-        dfPais = df[pais]
 
         #Diferenciar por genero
-        paisGen = np.asarray(dfPais[self.campoGenero].str.contains(self.genero))  
+        paisGen = np.asarray(df[self.campoGenero].str.contains(self.genero))  
 
         #Obtener todos los datos que son del genero dado
-        dfGen =  dfPais[paisGen]          
+        dfGen =  df[paisGen]          
         
         #Crear un array del largo de los dias y que represente las fechas en su valor
 
@@ -2043,8 +2037,10 @@ class Analisis12():
 
         lbl_enc = preprocessing.LabelEncoder()
         diasLimpios = lbl_enc.fit_transform(dfPais[self.campodia])        
+        diasLimpios2 = lbl_enc.fit_transform(dfPais2[self.campodia])        
 
         X = np.array(diasLimpios).reshape(-1,1)
+        X2 = np.array(diasLimpios2).reshape(-1,1)
         Y = dfPais[self.camponum]
         Y2 = dfPais2[self.camponum]
 
@@ -2064,7 +2060,7 @@ class Analisis12():
         regr2 = LinearRegression()
 
         regr.fit(X,Y)
-        regr2.fit(X,Y2)
+        regr2.fit(X2,Y2)
 
         #Preparamos las figuras
         fig, axs = plt.subplots(2)
@@ -2084,7 +2080,7 @@ class Analisis12():
         axs[0].set_ylim(menorInf1,mayorInf1) 
 
         #Realizar prediccion En pais 2
-        Y_PRED2 = regr2.predict(X)
+        Y_PRED2 = regr2.predict(X2)
 
         prediccion12 = regr2.predict([[mayorDia+1]])
         prediccion22 = regr2.predict([[mayorDia+365]])
@@ -2092,8 +2088,8 @@ class Analisis12():
         r22 = r2_score(Y2,Y_PRED2)        
         rmse2 = np.sqrt(mean_squared_error(Y2,Y_PRED2))         
 
-        axs[1].scatter(X,Y2,color="black")
-        axs[1].plot(X,Y_PRED2,color="blue")
+        axs[1].scatter(X2,Y2,color="black")
+        axs[1].plot(X2,Y_PRED2,color="blue")
         axs[1].set_ylim(menorInf2,mayorInf2) 
 
         
@@ -2121,12 +2117,8 @@ class Analisis12():
 
         descripcion += " Para aclarar el primer grafico es que del pais : "+ self.nombrePais + ", y el segundo grafico corresponde al pais: " + self.nombrePais2
         descripcion += " una vez aclarado esto se puede dar una descripcion acerca de cada uno de ellos\n"
-        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados del pais: " + self.nombrePais+" es el siguiente: \n"
-        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
-        descripcion += " Ademas de predecir hacia un año que los valores serian de: " + prediccion21 +"\n"
-        descripcion += " Y el modelo que presento mediante el entrenamiento segun los datos brindados del pais: " + self.nombrePais2+" es el siguiente: \n"
-        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
-        descripcion += " Ademas de predecir hacia un año que los valores serian de: " + prediccion22 +"\n"
+        descripcion += " Ademas de predecir hacia un año que los valores serian de: " + str(int(prediccion21)) +" del pais "+self.nombrePais+"\n"        
+        descripcion += " Ademas de predecir hacia un año que los valores serian de: " + str(int(prediccion22)) +" del pais "+self.nombrePais2+"\n"
 
         descripcion += " Entonces podemos concluir que: \n"
         if prediccion21 > prediccion12:
@@ -2243,10 +2235,10 @@ class Analisis13():
         descripcion = ""
         descripcion += " Los datos fueron obtenidos mediante una funcion polinomial de tercer grado brindada por sklearn\n"
         descripcion += " Esta funcion presento los siguientes resultados:\n"
-        descripcion += " Porcentaje de personas contagiadas de 0 a 25 años:" + str(por1) + ".\n"
-        descripcion += " Porcentaje de personas contagiadas de 25 a 50 años:" + str(por2) + ".\n"
-        descripcion += " Porcentaje de personas contagiadas de 50 a 75 años:" + str(por3) + ".\n"
-        descripcion += " Porcentaje de personas contagiadas mayores a 75 años:" + str(por4) + ".\n"
+        descripcion += " Porcentaje de personas contagiadas de 0 a 25 años:" + str(por1) + "%.\n"
+        descripcion += " Porcentaje de personas contagiadas de 25 a 50 años:" + str(por2) + "%.\n"
+        descripcion += " Porcentaje de personas contagiadas de 50 a 75 años:" + str(por3) + "%.\n"
+        descripcion += " Porcentaje de personas contagiadas mayores a 75 años:" + str(por4) + "%.\n"
         descripcion += " Por lo que concluimos que: "
 
         if por1>por2 and por1>por3 and por1>por4:
@@ -2489,7 +2481,7 @@ class Analisis16():
     camponumMuer = ''
     archivoEn = any
 
-    def __init__(self,nombrePais,campoPaises,campodia,camponumInf,camponumMuer,archivoEn):
+    def __init__(self,nombrePais,campoPaises,campodia,archivoEn,camponumInf,camponumMuer):
         self.nombrePais = nombrePais
         self.campoPaises = campoPaises
         self.campodia = campodia
@@ -2523,14 +2515,43 @@ class Analisis16():
             totalInfectados += infec
 
         #Obtener total de muertes
-        muertes = dfPais[self.camponumInf]
+        muertes = dfPais[self.camponumMuer]
 
         totalMuertes = 0
         for muerte in muertes:
             totalMuertes += muerte
 
         #Sacar un porcentaje
-        porcentaje = (totalInfectados / totalMuertes) * 100
+        porcentaje = (totalMuertes/totalInfectados) * 100
+        
+        # Declaramos valores para el eje x
+        eje_x = ['Total de Infectados', 'Total de muertes']
+        
+        ## Declaramos valores para el eje y
+        eje_y = [totalInfectados,totalMuertes]
+        
+        ## Creamos Gráfica
+        plt.bar(eje_x, eje_y)
+        
+        ## Legenda en el eje y
+        plt.ylabel('Cantidad')
+        
+        ## Legenda en el eje x
+        plt.xlabel('Tipo')
+        
+        ## Título de Gráfica
+        plt.title('Muertes frente al total de casos')
+
+        #Generar imagen y retornarla                                             
+        flike = io.BytesIO()
+        plt.savefig(flike)
+        b64 = base64.b64encode(flike.getvalue()).decode()
+        #plt.clf()
+        plt.cla()
+
+        #Retornar un arreglo que contenga la descripcion y el grafico
+        arrReturn =[any]*2
+        arrReturn[0] = b64
 
         #Describir
         descripcion = ""
@@ -2539,7 +2560,11 @@ class Analisis16():
         descripcion += " El total de muertes es: "+ str(totalMuertes) + "\n"
         descripcion += " El total de casos infecados es: "+ str(totalInfectados) + "\n"
         descripcion += " Por lo que podemos inferir que el porcentaje de muertes frente a casos de covid en "+ self.nombrePais+" es de \n"
-        descripcion += str(porcentaje)+"%\n"        
+        descripcion += str(porcentaje)+"%\n"      
+        
+        arrReturn[1] = descripcion         
+
+        return arrReturn
 
 #Tasa de comportamiento de casos activos en relación al número de muertes en un continente.
 class Analisis17():
@@ -2551,7 +2576,7 @@ class Analisis17():
     archivoEn = any    
 
 
-    def __init__(self,nombreContinente,campoPaises,campodia,camponum,camponum2,archivoEn):
+    def __init__(self,nombreContinente,campoPaises,campodia,archivoEn,camponum,camponum2):
         self.nombrePais = nombreContinente
         self.campoPaises = campoPaises
         self.campodia = campodia
@@ -2602,7 +2627,7 @@ class Analisis17():
         fig, axs = plt.subplots(2)
         #Realizar prediccion Infectados
         Y_PRED = regr.predict(X)
-        prediccion1Inf = regr2.predict([[mayorDia+1]])
+        prediccion1Inf = regr.predict([[mayorDia+1]])
 
 
 
@@ -2621,7 +2646,7 @@ class Analisis17():
 
 
         #((total cases - total cases previous day) / total cases previous day) *100
-        tasacomportamiento = round((prediccion1Inf/prediccion1Muer)*100 ,2)
+        tasacomportamiento = round((int(prediccion1Inf)/int(prediccion1Muer))*100 ,2)
         
 
         r22 = r2_score(Y2,Y_PRED2)        
@@ -2650,6 +2675,8 @@ class Analisis17():
         descripcion += " Tasa de comportamiento de un dia predecido despues del ultimo: " + str(tasacomportamiento)+"\n"                   
         descripcion += " Esta tasa se calcula mediante la siguiente formula:\n"                   
         descripcion += " Casos/Muertes\n"                   
+        descripcion += " Casos:"+str(int(prediccion1Inf))+"\n"                   
+        descripcion += " Muertes:"+str(int(prediccion1Muer))+"\n"                   
         descripcion += " Lo que nos indica que a un numero mayor menos muertes habran y a un numero menor\n"                   
         descripcion += " significa que terminaran en muerte mas casos activos\n"                   
         
@@ -2750,12 +2777,12 @@ class Analisis19():
         plt.plot(X_NEW, Y_NEW, color='coral', linewidth=3)  
 
         plt.grid()  
-        plt.set_xlim(x_new_min,x_new_max)  
-        plt.set_ylim(menorInf,prediccion1)  
+        plt.xlim(x_new_min,x_new_max)  
+        plt.ylim(menorInf,prediccion1)  
 
-        plt.set_title('\nTendencia de infeccion 1 Anio', fontsize=10)
-        plt.set_xlabel('Dia')
-        plt.set_ylabel('Infectados ') 
+        plt.title('\Prediccion de muertes a 1 Anio', fontsize=10)
+        plt.xlabel('Dia')
+        plt.ylabel('Muertos ') 
 
 
         
@@ -2777,8 +2804,8 @@ class Analisis19():
         descripcion += " RMSE : " + str(rmse) + "\n"
         descripcion += " R2 : " + str(r2) + "\n"
         #se realiza hacia un año adelante
-        descripcion += "\nLa tendencia de infeccion en el pais: "+ self.nombrePais + ", se realiza hacia futuro completando un año"
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion1) + " casos"
+        descripcion += "\nLa prediccion de muertes en el pais: "+ self.nombrePais + ", se realiza hacia \n futuro completando un año"
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion1)) + " casos"
 
         arrReturn[1] = descripcion         
 
@@ -2786,17 +2813,13 @@ class Analisis19():
 
 #Tasa de crecimiento de casos de COVID-19 en relación con nuevos casos diarios y tasa de muerte por COVID-19
 class Analisis20():
-    nombrePais = ''
-    campoPaises = ''
     campodia = ''
     camponum = ''
     camponum2 = ''
     archivoEn = any    
 
 
-    def __init__(self,nombrePais,campoPaises,campodia,camponum,camponum2,archivoEn):
-        self.nombrePais = nombrePais
-        self.campoPaises = campoPaises
+    def __init__(self,campodia,archivoEn,camponum,camponum2):
         self.campodia = campodia
         self.camponum = camponum
         self.camponum2 = camponum2
@@ -2838,9 +2861,9 @@ class Analisis20():
         fig, axs = plt.subplots(2)
         #Realizar prediccion Infectados
         Y_PRED = regr.predict(X)
-        prediccion1Inf = regr2.predict([[mayorDia]])
+        prediccion1Inf = regr.predict([[mayorDia]])
 
-        prediccion2Inf = regr2.predict([[mayorDia+1]])
+        prediccion2Inf = regr.predict([[mayorDia+1]])
 
         prediccion1Inf = int(prediccion1Inf)
         prediccion2Inf = int(prediccion2Inf)
@@ -2897,8 +2920,8 @@ class Analisis20():
         descripcion += " Los datos fueron obtenidos mediante una funcion lineal brindada por sklearn \n"
         descripcion += " Las funciones que se presentan son las predicciones de numero de infectados y numero de muertes\n"                   
         descripcion += " Estas funciones presentaron los siguientes resultados:\n"                   
-        descripcion += " Tasa de crecimiento de Muertes:"+str(tasaInf) + "%\n"     
-        descripcion += " Tasa de crecimiento de casos: "+ str(tasaMuer) + "%\n"    
+        descripcion += " Tasa de crecimiento de Muertes:"+str(tasaMuer) + "%\n"     
+        descripcion += " Tasa de crecimiento de casos: "+ str(tasaInf) + "%\n"    
         descripcion += " Para calcular esta tasa se utilizo la siguiente formula: \n"    
         descripcion += " (TotalCasos-TotalCasos dia anterior)/TotalCasos dia anterior\n"            
         descripcion += " Lo que resta ahi es multiplicarlo por 100 para obtener un porcentaje.\n"            
@@ -2908,18 +2931,14 @@ class Analisis20():
         return arrReturn
 
 #Predicciones de casos y muertes en todo el mundo - Neural Network MLPRegressor
-class Analisis21():
-    nombrePais = ''
-    campoPaises = ''
+class Analisis21():    
     campodia = ''
     camponum = ''
     camponum2 = ''
     archivoEn = any    
 
 
-    def __init__(self,nombrePais,campoPaises,campodia,camponum,camponum2,archivoEn):
-        self.nombrePais = nombrePais
-        self.campoPaises = campoPaises
+    def __init__(self,campodia,archivoEn,camponum,camponum2):        
         self.campodia = campodia
         self.camponum = camponum
         self.camponum2 = camponum2
@@ -2960,13 +2979,15 @@ class Analisis21():
 
         training_deaths = mlp2.predict(X)
 
-        pred1Casos = mlp.predict(mayorDia+1)
-        pred2Casos = mlp.predict(mayorDia+30)
-        pred3Casos = mlp.predict(mayorDia+365)
+        print(mayorDia)
+
+        pred1Casos = mlp.predict([[mayorDia+1]])
+        pred2Casos = mlp.predict([[mayorDia+30]])
+        pred3Casos = mlp.predict([[mayorDia+365]])
         
-        pred1Muertes = mlp2.predict(mayorDia+1)
-        pred2Muertes = mlp2.predict(mayorDia+30)
-        pred3Muertes = mlp2.predict(mayorDia+365)
+        pred1Muertes = mlp2.predict([[mayorDia+1]])
+        pred2Muertes = mlp2.predict([[mayorDia+30]])
+        pred3Muertes = mlp2.predict([[mayorDia+365]])
 
         fig, axs = plt.subplots(2)
 
@@ -2997,12 +3018,12 @@ class Analisis21():
         descripcion = ""
         descripcion += " Los datos fueron obtenidos mediante una red neural brindada por sklearn llamada MLBPRegressor\n"
         descripcion += " Esta funcion presento los siguientes resultados:\n"                
-        descripcion += " Prediccion para 1 dia despues Casos:"+str(pred1Casos)+"\n"
-        descripcion += " Prediccion para 1 dia despues Muertes:"+str(pred1Muertes)+"\n"
-        descripcion += " Prediccion para 30 dias despues Casos:"+str(pred2Casos)+"\n"           
-        descripcion += " Prediccion para 30 dias despues Muertes:"+str(pred2Muertes)+"\n" 
-        descripcion += " Prediccion para 365 dias despues del ultimo Casos:"+str(pred3Casos)+"\n"                
-        descripcion += " Prediccion para 365 dias despues del ultimo Muertes:"+str(pred3Muertes)+"\n"                       
+        descripcion += " Prediccion para 1 dia despues Casos:"+str(int(pred1Casos))+"\n"
+        descripcion += " Prediccion para 1 dia despues Muertes:"+str(int(pred1Muertes))+"\n"
+        descripcion += " Prediccion para 30 dias despues Casos:"+str(int(pred2Casos))+"\n"           
+        descripcion += " Prediccion para 30 dias despues Muertes:"+str(int(pred2Muertes))+"\n" 
+        descripcion += " Prediccion para 365 dias despues del ultimo Casos:"+str(int(pred3Casos))+"\n"                
+        descripcion += " Prediccion para 365 dias despues del ultimo Muertes:"+str(int(pred3Muertes))+"\n"                       
 
         arrReturn[1] = descripcion         
 
@@ -3018,7 +3039,7 @@ class Analisis22():
     archivoEn = any    
 
 
-    def __init__(self,nombrePais,campoPaises,campodia,camponumInf,camponumMuer,archivoEn):
+    def __init__(self,nombrePais,campoPaises,campodia,archivoEn,camponumInf,camponumMuer):
         self.nombrePais = nombrePais
         self.campoPaises = campoPaises
         self.campodia = campodia
@@ -3090,7 +3111,7 @@ class Analisis22():
         axs[0].scatter(X,Y1,color="black")
         axs[0].plot(X,Y_PRED,color="blue")
 
-        axs[0].ylim(menorInf,mayorInf) 
+        axs[0].set_ylim(menorInf,mayorInf) 
 
         #Prediccion de muertes
         regr2 = LinearRegression()
@@ -3110,7 +3131,7 @@ class Analisis22():
         axs[1].scatter(X,Y2,color="black")
         axs[1].plot(X,Y_PRED2,color="blue")
 
-        axs[1].ylim(menorMuer,mayorMuer) 
+        axs[1].set_ylim(menorMuer,mayorMuer) 
 
         #TAsa de mortalidad
         tasa = prediccionAcumMuer/prediccionAcumInf
@@ -3133,35 +3154,29 @@ class Analisis22():
         descripcion += " RMSE : " + str(rmse1) + "\n"
         descripcion += " R2 : " + str(r21) + "\n"
 
-        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados es el siguiente: \n"
-        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
-
         descripcion += " La segunda funcion presento los siguientes resultados para los casos de infectados:\n"
         descripcion += " RMSE : " + str(rmse2) + "\n"
         descripcion += " R2 : " + str(r22) + "\n"
 
-        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados es el siguiente: \n"
-        descripcion += " Y = " + str(regr2.coef_[0][0]) + "X+" + str(regr2.intercept_[0]) + "\n"
-
         descripcion += "\nEste indice de mortaliadad en el pais: "+ self.nombrePais
         descripcion += ", se realiza mediante varias perspectivas,la de los casos y la de los muertos, ademas de verlos a traves del tiempo,"
         descripcion += " para los casos se predicen algunos datos, el primero es justo al dia siguiente del ultimo ingresado"
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion1Inf) + " infectados, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion2Inf) + " infectados"
-        descripcion += " asi como tambien se obtiene una prediccion de los casos acumulados de "+str(prediccionAcumInf) + " infectados."
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion1Inf)) + " infectados, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion2Inf)) + " infectados"
+        descripcion += " asi como tambien se obtiene una prediccion de los casos acumulados de "+str(int(prediccionAcumInf)) + " infectados."
         descripcion += " Y de la misma manera se realiza para los muertos, el primero justo al dia siguiente del ultimo"
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion1Muer) + " muertos, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion2Muer) + " muertos"
-        descripcion += " asi como tambien se obtiene una prediccion de los muertos acumulados de "+str(prediccionAcumMuer) + " .\n"
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion1Muer)) + " muertos, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion2Muer)) + " muertos"
+        descripcion += " asi como tambien se obtiene una prediccion de los muertos acumulados de "+str(int(prediccionAcumMuer)) + " .\n"
         descripcion += " Analizando el modelo que se presento se infiere que: \n"
-        if str(regr2.coef_[0][0]) < 0:
+        if regr2.coef_[0] < 0:
             descripcion += " Las muertes en el pais estaran disminuyendo\n"
         else:
             descripcion += " Las muertes en el pais estaran aumentando\n"   
 
         descripcion += " Asi que de esta manera podemos explicar que la tasa de mortalidad en: " + self.nombrePais + " se calcula de la siguiente manera: \n"
         descripcion += " Muertos / Casos\n"
-        descripcion +=  str(prediccionAcumMuer)+"/"+str(prediccionAcumInf)+" = "+str(tasa*100)+"%\n"
+        descripcion +=  str(int(prediccionAcumMuer))+"/"+str(int(prediccionAcumInf))+" = "+str(int(tasa*100))+"%\n"
 
         arrReturn[1] = descripcion         
 
@@ -3177,7 +3192,7 @@ class Analisis24():
     archivoEn = any    
 
 
-    def __init__(self,nombrePais,campoPaises,campodia,camponumInf,camponumMuer,archivoEn):
+    def __init__(self,nombrePais,campoPaises,campodia,archivoEn,camponumInf,camponumMuer):
         self.nombrePais = nombrePais
         self.campoPaises = campoPaises
         self.campodia = campodia
@@ -3249,7 +3264,7 @@ class Analisis24():
         axs[0].scatter(X,Y1,color="black")
         axs[0].plot(X,Y_PRED,color="blue")
 
-        axs[0].ylim(menorInf,mayorInf) 
+        axs[0].set_ylim(menorInf,mayorInf) 
 
         #Prediccion de muertes
         regr2 = LinearRegression()
@@ -3269,10 +3284,10 @@ class Analisis24():
         axs[1].scatter(X,Y2,color="black")
         axs[1].plot(X,Y_PRED2,color="blue")
 
-        axs[1].ylim(menorMuer,mayorMuer) 
+        axs[1].set_ylim(menorMuer,mayorMuer) 
 
         #Tasa de Pruebas
-        tasa = round((prediccionAcumMuer/prediccionAcumInf)*100,2)
+        tasa = round((int(prediccionAcumMuer)/int(prediccionAcumInf))*100,2)
         
         #Generar imagen y retornarla                                             
         flike = io.BytesIO()
@@ -3288,27 +3303,22 @@ class Analisis24():
         #Generar una descripcion
         descripcion = ""
         descripcion += " Los datos fueron obtenidos mediante una funcion lineal brindada por sklearn\n"
-        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados es el siguiente: \n"
-        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
-
-        descripcion += " Y el segundo modelo que presento mediante el entrenamiento segun los datos brindados es el siguiente: \n"
-        descripcion += " Y = " + str(regr2.coef_[0][0]) + "X+" + str(regr2.intercept_[0]) + "\n"
 
         descripcion += "\nLas graficas representan una prediccion de como se ven los casos frente a las pruebas que se estan realizando"
         descripcion += " para aclarar la primer grafica representan los infectados y la segunda las pruebas realizadas, asi que se realiza un estudio "
         descripcion += " perspectivas a traves del tiempo,"
         descripcion += " para los casos se predicen algunos datos, el primero es justo al dia siguiente del ultimo ingresado"
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion1Inf) + " infectados, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion2Inf) + " infectados"
-        descripcion += " asi como tambien se obtiene una prediccion de los casos acumulados de "+str(prediccionAcumInf) + " infectados."
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion1Inf)) + " infectados, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion2Inf)) + " infectados"
+        descripcion += " asi como tambien se obtiene una prediccion de los casos acumulados de "+str(int(prediccionAcumInf)) + " infectados."
         descripcion += " Y de la misma manera se realiza para las pruebas, el primero justo al dia siguiente del ultimo"
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion1Muer) + " muertos, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
-        descripcion += " donde se obtiene una prediccion de "+str(prediccion2Muer) + " muertos"
-        descripcion += " asi como tambien se obtiene una prediccion de los pruebas acumulados de "+str(prediccionAcumMuer) + " .\n"                 
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion1Muer)) + " muertos, el segundo se observa hacia futuro ,año despues del primero ingresado para ser exactos"                
+        descripcion += " donde se obtiene una prediccion de "+str(int(prediccion2Muer)) + " muertos"
+        descripcion += " asi como tambien se obtiene una prediccion de los pruebas acumulados de "+str(int(prediccionAcumMuer)) + " .\n"                 
 
         descripcion += " Asi que de esta manera podemos explicar que la tasa de mortalidad en: " + self.nombrePais + " se calcula de la siguiente manera: \n"
         descripcion += " Pruebas / Casos\n"
-        descripcion +=  str(prediccionAcumMuer)+"/"+str(prediccionAcumInf)+" = "+str(tasa)+"%\n"
+        descripcion +=  str(int(prediccionAcumMuer))+"/"+str(int(prediccionAcumInf))+" = "+str(tasa)+"%\n"
 
         arrReturn[1] = descripcion         
 
@@ -3394,15 +3404,12 @@ class Analisis25():
         descripcion += " RMSE : " + str(rmse1) + "\n"
         descripcion += " R2 : " + str(r21) + "\n"
 
-        descripcion += " El modelo que presento mediante el entrenamiento segun los datos brindados es el siguiente: \n"
-        descripcion += " Y = " + str(regr.coef_[0][0]) + "X+" + str(regr.intercept_[0]) + "\n"
-
-        descripcion += " Se realizan dos predicciones la primera es al dia siguiente al ultimo, que da "+prediccion1Inf + "casos y la otra"
-        descripcion += " es a 365 dias despues del ultimo que da "+prediccion2Inf + "casos.\n"
+        descripcion += " Se realizan dos predicciones la primera es al dia siguiente al ultimo, que da "+str(int(prediccion1Inf)) + "casos y la otra"
+        descripcion += " es a 365 dias despues del ultimo que da "+str(int(prediccion2Inf)) + "casos.\n"
 
 
 
-        if str(regr.coef_[0][0]) < 0:
+        if regr.coef_[0] < 0:
             descripcion += " Los casos de infecciones por coronavirus estaran disminuyendo\n"
         else:
             descripcion += " Las casos de infecciones por coronavirus estaran aumentando\n"           

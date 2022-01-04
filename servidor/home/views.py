@@ -5,8 +5,10 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from .forms import AnalizarForm, ParametrizarForm
 
-from .analizadores.analisis1 import Analisis1
-from .analizadores.analisis1 import Analisis3
+from .analizadores.analisis1 import Analisis1, Analisis2,Analisis3,Analisis4,Analisis5,Analisis6,Analisis7,Analisis8,Analisis9,Analisis10
+from .analizadores.analisis1 import Analisis11, Analisis12,Analisis13,Analisis15,Analisis16,Analisis17,Analisis19,Analisis20
+from .analizadores.analisis1 import Analisis21, Analisis22,Analisis24,Analisis25
+
 
 # Imports de generacion de PDF
 import io
@@ -48,6 +50,22 @@ def index(request):
                 request.session['descripcion'] = descripcion
                 request.session['nombreAnalisis'] = 'Tendencia de la infección por Covid-19 en un País.'
 
+            elif numAnalisis == '2':
+                nombrePais = form.cleaned_data['nombrePais']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                analisis1 = Analisis2(nombrePais=nombrePais, campoPaises=campoPaises,
+                                      campodia=campodia, camponum=camponum, archivoEn=archivoEn)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de Infertados en un País.'
+
             # Analisis No.3
             elif numAnalisis == '3':
                 nombrePais = form.cleaned_data['nombrePais']
@@ -60,6 +78,313 @@ def index(request):
                 analisis1 = Analisis3(nombrePais=nombrePais, campoPaises=campoPaises,
                                       campodia=campodia, camponum=camponum, archivoEn=archivoEn, camponumIsopado=camponumIsopado, cantidadDias=diasProyeccion)
                 descripcion = analisis1.analizar()
+                #request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de Infertados en un País.'
+
+            elif numAnalisis == '4':                
+                nombrePais = form.cleaned_data['nombrePais']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                campoDepartamento = form.cleaned_data['diasProyeccion']
+                nombreDep = form.cleaned_data['camponumIsopado']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis4(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn,campoDepartamento=campoDepartamento,nombreDep=nombreDep)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de Infertados en un País.'
+            elif numAnalisis == '5':                
+                nombrePais = form.cleaned_data['nombrePais']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis5(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de Infertados en un País.'
+            elif numAnalisis == '6':                
+                nombrePais = form.cleaned_data['nombrePais']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis6(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de Infertados en un País.'
+            elif numAnalisis == '7':                
+                nombrePais = form.cleaned_data['nombrePais']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis7(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia del número de infectados por día de un País.'
+            elif numAnalisis == '8':                
+                nombrePais = form.cleaned_data['nombrePais']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis8(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de casos de un país para un año.'
+            elif numAnalisis == '9':                
+                nombrePais = form.cleaned_data['nombrePais']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis9(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '10':          
+                      
+                nombrePais = form.cleaned_data['nombrePais']
+                nombrePais2 = form.cleaned_data['diasProyeccion']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis10(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn,nombrePais2=nombrePais2)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '11':          
+                      
+                nombrePais = form.cleaned_data['nombrePais']                
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                genero = form.cleaned_data['camponumIsopado']
+                campoGenero = form.cleaned_data['diasProyeccion']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis11(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn,genero=genero,campoGenero=campoGenero)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '12':          
+                      
+                nombrePais = form.cleaned_data['nombrePais']
+                nombrePais2 = form.cleaned_data['diasProyeccion']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis12(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn,nombrePais2=nombrePais2)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '13':          
+                      
+                nombrePais = form.cleaned_data['nombrePais']
+                campoEdad = form.cleaned_data['diasProyeccion']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis13(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn,campoEdad=campoEdad)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '15':          
+                      
+                nombrePais = form.cleaned_data['nombrePais']
+                campoDep = form.cleaned_data['diasProyeccion']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                nombreDep = form.cleaned_data['camponumIsopado']                
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis15(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn,nombreDep=nombreDep,campoDep=campoDep)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '16':
+                      
+                nombrePais = form.cleaned_data['nombrePais']
+                camponum2 = form.cleaned_data['diasProyeccion']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis16(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, archivoEn=archivoEn,camponumInf=camponum,camponumMuer=camponum2)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '17':
+                      
+                nombrePais = form.cleaned_data['nombrePais']
+                camponum2 = form.cleaned_data['diasProyeccion']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis17(nombreContinente=nombrePais, campoPaises=campoPaises,campodia=campodia, archivoEn=archivoEn,camponum=camponum,camponum2=camponum2)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '19':                
+                nombrePais = form.cleaned_data['nombrePais']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis19(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, camponum=camponum, archivoEn=archivoEn)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de muertes en el último día del primer año de infecciones en un país.'
+            elif numAnalisis == '20':                                
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                camponum2 = form.cleaned_data['nombrePais']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis20(campodia=campodia, archivoEn=archivoEn,camponum=camponum, camponum2=camponum2)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de muertes en el último día del primer año de infecciones en un país.'
+            elif numAnalisis == '21':                                
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                camponum2 = form.cleaned_data['nombrePais']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis21(campodia=campodia, archivoEn=archivoEn,camponum=camponum, camponum2=camponum2)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de muertes en el último día del primer año de infecciones en un país.'
+            elif numAnalisis == '22':
+                      
+                nombrePais = form.cleaned_data['nombrePais']
+                camponum2 = form.cleaned_data['diasProyeccion']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis22(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, archivoEn=archivoEn,camponumInf=camponum,camponumMuer=camponum2)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '24':
+                      
+                nombrePais = form.cleaned_data['nombrePais']
+                camponum2 = form.cleaned_data['diasProyeccion']
+                campoPaises = form.cleaned_data['campoPaises']
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis24(nombrePais=nombrePais, campoPaises=campoPaises,campodia=campodia, archivoEn=archivoEn,camponumInf=camponum,camponumMuer=camponum2)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Tendencia de la vacunación en un País.'
+            elif numAnalisis == '25':                                
+                campodia = form.cleaned_data['campodia']
+                camponum = form.cleaned_data['camponum']                
+                archivoEn = request.FILES['archivoEn']
+                                
+                analisis1 = Analisis25(campodia=campodia, camponumInf=camponum,archivoEn=archivoEn)
+
+                contextoTotal = analisis1.analizar()
+                contexto = contextoTotal[0]
+                descripcion = contextoTotal[1]
+                request.session['imagen'] = contextoTotal[0]
+                request.session['descripcion'] = descripcion
+                request.session['nombreAnalisis'] = 'Predicción de muertes en el último día del primer año de infecciones en un país.'
         else:
             print('No es valido')
 
@@ -134,7 +459,7 @@ def descargar(request):
             cont1 -= 14
     p.drawString(30,cont1,'GRAFICO:')    
 
-    p.drawImage('grafico.png',30,150,300,300)
+    p.drawImage('grafico.png',30,0,300,300)
 
 
     # Close the PDF object cleanly, and we're done.

@@ -59,7 +59,7 @@
                         continente.</option>
                     <option value="18">Comportamiento y clasificación de personas infectadas por COVID-19 por municipio
                         en un País.</option>
-                    <option value="29">Predicción de muertes en el último día del primer año de infecciones en un país.
+                    <option value="19">Predicción de muertes en el último día del primer año de infecciones en un país.
                     </option>
                     <option value="20">Tasa de crecimiento de casos de COVID-19 en relación con nuevos casos diarios y
                         tasa de muerte por COVID-19</option>
@@ -86,8 +86,8 @@
                 <h2>Parametrizar y Subir Archivo Excel</h2>
                 <input id="tipoAnalisis" name="tipoAnalisis" type="hidden" value="{{valorParametro}}">
                 <div class="mb-3"><label for="archivoEn" class="form-label">Archivo Entrada</label><input class="form-control" type="file" id="archivoEn" name="archivoEn" accept=".xls,.csv,.json,.xlsx"></div>
-                {% if valorParametro == "1" or valorParametro == "2" %}
-                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Guatemala" required></div>
+                {% if valorParametro == "1" or valorParametro == "2" or valorParametro == "7" or valorParametro == "8"%}
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
                 <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
                 <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
                 <div class="form-group"><label for="camponum">Campo No.Casos</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="casos" required></div>
@@ -95,9 +95,103 @@
                 <div class="form-group"><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="America" type="hidden" value="0"></div>
                 <div class="form-group"><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="America" type="hidden" value="camponumIsopado"></div>
                 {% elif valorParametro == "3" %}
-
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Casos</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="casos" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><label for="diasProyeccion">Dias a proyectar</label><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="0" type="text" required></div>
+                <div class="form-group"><label for="camponumIsopado">Campo No.Hisopados</label><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="Hisopados" type="text" required></div>                
+                {% elif valorParametro == "4" %}
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Muertes</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="casos" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><label for="diasProyeccion">Campo Departamento</label><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="Departamento" type="text" required></div>
+                <div class="form-group"><label for="camponumIsopado">Nombre Departamento</label><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="San Salvador" type="text" required></div>                
+                {% elif valorParametro == "5" or valorParametro == "6" or valorParametro == "19" %}
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Muertos</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="Muertes" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="America" type="hidden" value="0"></div>
+                <div class="form-group"><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="America" type="hidden" value="camponumIsopado"></div>
+                {% elif valorParametro == "9"%}
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Vacunados</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="vacunados" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="America" type="hidden" value="0"></div>
+                <div class="form-group"><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="America" type="hidden" value="camponumIsopado"></div>
+                {% elif valorParametro == "10" or valorParametro == "12"%}
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Vacunados</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="vacunados" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><label for="diasProyeccion">Nombre del Pais 2</label><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="Guatemala" type="text" required></div>
+                <div class="form-group"><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="America" type="hidden" value="camponumIsopado"></div>
+                {% elif valorParametro == "11" %}
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Muertes</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="casos" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><label for="diasProyeccion">Campo Genero</label><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="Genero" type="text" required></div>
+                <div class="form-group"><label for="camponumIsopado">Genero</label><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="hombre" type="text" required></div>
+                {% elif valorParametro == "13"%}
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Infectados</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="vacunados" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><label for="diasProyeccion">Campo de Edad</label><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="Edad" type="text" required></div>
+                <div class="form-group"><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="America" type="hidden" value="camponumIsopado"></div>
+                {% elif valorParametro == "15" %}
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Casos</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="casos" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><label for="diasProyeccion">Campo Departamento</label><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="Genero" type="text" required></div>
+                <div class="form-group"><label for="camponumIsopado">Nombre Departamento</label><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="hombre" type="text" required></div>
+                {% elif valorParametro == "16" or valorParametro == "22" or valorParametro == "24"%}
+                <div class="form-group"><label for="campoPaises">Campo de Paises</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Casos</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="vacunados" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><label for="diasProyeccion">Campo No.Muertes</label><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="Edad" type="text" required></div>
+                <div class="form-group"><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="America" type="hidden" value="camponumIsopado"></div>
+                {% elif valorParametro == "17"%}
+                <div class="form-group"><label for="campoPaises">Campo de Continente</label><input type="text" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" required></div>
+                <div class="form-group"><label for="nombrePais">Nombre del Pais</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Casos</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="vacunados" required></div>
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><label for="diasProyeccion">Campo No.Muertes</label><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="Edad" type="text" required></div>
+                <div class="form-group"><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="America" type="hidden" value="camponumIsopado"></div>
+                {% elif valorParametro == "20" or valorParametro == "21"%}
+                <div class="form-group"><input type="hidden" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" value="val"></div>
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Casos</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="casos" required></div>
+                <div class="form-group"><label for="nombrePais">Campo No.Muertes</label><input type="text" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" required></div>       
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="America" type="hidden" value="0"></div>
+                <div class="form-group"><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="America" type="hidden" value="camponumIsopado"></div>
+                {% elif valorParametro == "25"%}
+                <div class="form-group"><input type="hidden" class="form-control" id="campoPaises" name="campoPaises" placeholder="Pais" value="val"></div>
+                <div class="form-group"><label for="campodia">Campo del dia</label><input type="text" class="form-control" id="campodia" name="campodia" placeholder="dias" required></div>
+                <div class="form-group"><label for="camponum">Campo No.Casos</label><input type="text" class="form-control" id="camponum" name="camponum" placeholder="casos" required></div>
+                <div class="form-group"><input type="hidden" class="form-control" id="nombrePais" name="nombrePais" placeholder="Guatemala" value="a"></div>       
+                <div class="form-group"><input class="form-control" id="nombreContinente" name="nombreContinente" placeholder="America" type="hidden" value="Continente"></div>
+                <div class="form-group"><input class="form-control" id="diasProyeccion" name="diasProyeccion" placeholder="America" type="hidden" value="0"></div>
+                <div class="form-group"><input class="form-control" id="camponumIsopado" name="camponumIsopado" placeholder="America" type="hidden" value="camponumIsopado"></div>
+                {% else %}
                 {{valorParametro}}
-                
                 {% endif%}
                 <br><div class="d-grid gap-2 d-md-flex justify-content-md-end"><button type="submit" class="btn btn-primary">Analizar</button></div>
                 {% endif%}
